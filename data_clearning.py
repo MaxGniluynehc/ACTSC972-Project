@@ -36,9 +36,13 @@ equal_weighted_quintile_portfolio_returns = equal_weighted_return_daily[["Date",
 print("Both value_weighted and equal_weighted quintile portfolios are successfully generated.")
 
 
-tbill3m_daily = pd.read_csv(data_PATH+"TB3MS.csv")
+tbill3m_daily = pd.read_csv(data_PATH+"DTB3.csv")
+tbill3m_daily.DATE = pd.to_datetime(tbill3m_daily.DATE)
+tbill3m_daily.DTB3 = tbill3m_daily.DTB3.replace(".", np.nan).astype("float")
+tbill3m_daily.DTB3.interpolate(method = "linear", inplace = True)
 tbill3m_daily.head()
 
+print("3 month Tbill secondary market rates (daily frequency) are successfully generated.")
 
 
 
