@@ -44,13 +44,19 @@ plt.xlim([datetime(1980,1,1), datetime(2023, 12, 30)])
 
 
 # MA Strategy
+# base test 1963-2013
+# back test 2014-2022
+
+T = int((datetime(2023, 12, 30) - datetime(1980,1,1)).days)/365.25
+
+(p1.iloc[-1]/p1.iloc[0])**(1/T) - 1
 
 
+p1 = np.cumprod(1+df["Lo 20"]/100)
 
 
-
-
-
+df["P Lo 20"] = p1
+df.head()
 
 
 # TSMOM
