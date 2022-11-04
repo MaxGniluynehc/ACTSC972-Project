@@ -58,6 +58,8 @@ p1 = np.cumprod(1+df["Lo 20"]/100)
 df["P Lo 20"] = p1
 df.head()
 
+# Hey i added a line!
+
 
 # TSMOM
 
