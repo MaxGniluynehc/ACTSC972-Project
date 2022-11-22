@@ -5,8 +5,8 @@ import pandas.tseries.offsets as pdoffsets
 # tc.backends.mps.is_available()
 
 
-# data_PATH = "/Users/y222chen/Documents/Max/Study/ACTSC972-Finance3/Project/data/"
-data_PATH = "/Users/maxchen/Documents/Study/STA/ACTSC972-Finance3/Project/project/data/"
+data_PATH = "/Users/y222chen/Documents/Max/Study/ACTSC972-Finance3/Project/data/"
+# data_PATH = "/Users/maxchen/Documents/Study/STA/ACTSC972-Finance3/Project/project/data/"
 
 
 # df_full_daily = pd.read_csv(data_PATH+"Portfolios_Formed_on_ME_daily.csv", skiprows=12)
@@ -76,6 +76,26 @@ equal_weighted_return_annual.Date = pd.to_datetime(equal_weighted_return_annual.
 equal_weighted_quintile_portfolio_returns_annual = equal_weighted_return_annual[["Date", "Lo 20", 'Qnt 2', 'Qnt 3', 'Qnt 4', 'Hi 20',]]
 equal_weighted_quintile_portfolio_returns_annual = (equal_weighted_quintile_portfolio_returns_annual.set_index(keys="Date"))
 print("Both value_weighted and equal_weighted quintile portfolios (annual) are successfully generated.")
+
+
+fama_french_4factors_daily = pd.read_csv(data_PATH + "F-F_Research_Data_Factors_daily.csv", skiprows=4)
+fama_french_4factors_daily = fama_french_4factors_daily.iloc[:-1,:]
+column_names = pd.Index(np.append(["Date"],list(fama_french_4factors_daily.columns[1:])))
+fama_french_4factors_daily.columns = column_names
+fama_french_4factors_daily.Date = pd.to_datetime(fama_french_4factors_daily.Date, format="%Y%m%d")
+fama_french_4factors_daily = fama_french_4factors_daily.set_index(keys="Date")
+fama_french_4factors_daily = fama_french_4factors_daily.rename(columns = {"Mkt-RF": "Mkt_RF"})
+fama_french_4factors_daily["Mkt"] = fama_french_4factors_daily["Mkt_RF"] + fama_french_4factors_daily["RF"]
+print("Fama French 4 factors daily is succesfully generated.")
+
+fama_french_4factors_monthly = pd.read_csv(data_PATH+"F-F_Research_Data_Factors.CSV", skiprows=3, nrows=1159-4)
+column_names = pd.Index(np.append(["Date"],list(fama_french_4factors_monthly.columns[1:])))
+fama_french_4factors_monthly.columns = column_names
+fama_french_4factors_monthly.Date = pd.to_datetime(fama_french_4factors_monthly.Date, format="%Y%m")
+fama_french_4factors_monthly = fama_french_4factors_monthly.set_index(keys="Date")
+fama_french_4factors_monthly = fama_french_4factors_monthly.rename(columns = {"Mkt-RF": "Mkt_RF"})
+fama_french_4factors_monthly["Mkt"] = fama_french_4factors_monthly["Mkt_RF"] + fama_french_4factors_monthly["RF"]
+print("Fama French 4 factors monthly is succesfully generated.")
 
 
 
