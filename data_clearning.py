@@ -5,8 +5,8 @@ import pandas.tseries.offsets as pdoffsets
 # tc.backends.mps.is_available()
 
 
-data_PATH = "/Users/y222chen/Documents/Max/Study/ACTSC972-Finance3/Project/data/"
-# data_PATH = "/Users/maxchen/Documents/Study/STA/ACTSC972-Finance3/Project/project/data/"
+# data_PATH = "/Users/y222chen/Documents/Max/Study/ACTSC972-Finance3/Project/data/"
+data_PATH = "/Users/maxchen/Documents/Study/STA/ACTSC972-Finance3/Project/project/data/"
 
 
 # df_full_daily = pd.read_csv(data_PATH+"Portfolios_Formed_on_ME_daily.csv", skiprows=12)

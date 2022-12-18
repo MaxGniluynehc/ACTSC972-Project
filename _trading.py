@@ -47,7 +47,6 @@ plt.xlim([datetime(1963,1,1), datetime(2022, 5, 1)])
 # plt.ylim([0,30000])
 plt.savefig(fig_PATH + "quintile_time_series.png")
 
-# (p1.loc[datetime(2013, 12, 30)]/p1.loc[datetime(1963,1,2)])**(1/50) # raw return over the trading period
 #
 # 3-month Tbill rate
 plt.figure()
@@ -58,34 +57,8 @@ plt.legend()
 plt.savefig(fig_PATH + "tbill.png")
 #
 
-
-# t0 = datetime(2008,1,25)
-# plt.figure()
-# plt.plot(p1.loc[t0:t0+timedelta(days=10)], label = "Lo 20")
-# plt.plot(p1.rolling(window=10).mean().loc[t0:t0+timedelta(days=10)], label="10-day MA")
-# plt.xticks([t0, t0+timedelta(days=10/2), t0+timedelta(days=10)],
-#            [t0.date(), (t0+timedelta(days=10/2)).date(), (t0+timedelta(days=10)).date()])
-# plt.legend()
-# plt.savefig(fig_PATH+"trading_strategy_demo_MA_TSMOM_same.png")
-
-# MA Strategy
-# base test 1963-2013
-# back test 2014-2022
-
-
-# def daterange(start_date, end_date):
-#     for n in range(int((end_date - start_date).days)):
-#         yield start_date + timedelta(n)
 base_test_timerange = list(df.index[(df.index > datetime(1963,1,1)) & (df.index < datetime(2013,12,31))])
 
-
-# MA_buy_signal = []
-# TSMOM_buy_signal = []
-# holding_day = []
-# for i, d in enumerate(base_test_timerange[:-1]):
-#     MA_buy_signal.append( int(df["P Lo 20"][d] > df["P Lo 20"][d-timedelta(days=9): d].mean()) )
-#     TSMOM_buy_signal.append( int(df["P Lo 20"][d] > df["P Lo 20"][d-timedelta(days=11): d-timedelta(days=9)].mean()) )
-#     holding_day.append( (base_test_timerange[i+1] - base_test_timerange[i]).days )
 
 
 def get_portfolio_value_process(portfolio = "Hi 20", strategy="MA", look_back=100, transaction_cost = 0.4/100,
@@ -150,17 +123,6 @@ def get_portfolio_value_process(portfolio = "Hi 20", strategy="MA", look_back=10
             return Vt, r
 
 
-new_trade_period = (datetime(1963,1,1), datetime(1983,12,31)) # (datetime(2005,1,1), datetime(2021,12,31)) #
-Vt_bh, r_bh = get_portfolio_value_process(portfolio = "Lo 20", strategy="buy-hold", trade_period=new_trade_period, transaction_cost = 0.4/100)
-Vt_MA, r_MA = get_portfolio_value_process(portfolio = "Lo 20", strategy="MA", trade_period=new_trade_period, transaction_cost = 0.4/100)
-Vt_MOM, r_MOM = get_portfolio_value_process(portfolio = "Lo 20", strategy="TSMOM", trade_period=new_trade_period, transaction_cost = 0.4/100)
-
-Rt_MA = (Vt_MA.values[1:] - Vt_MA.values[:-1])/Vt_MA.values[:-1]
-RV = np.sqrt(np.mean((Rt_MA - np.mean(Rt_MA))**2) *252)
-np.std(Rt_MA)
-
-r_MA - 1.96 * RV
-
 
 def get_realized_volatility(Rt, method="annual"):
     if method == "daily":
@@ -174,78 +136,6 @@ def get_realized_volatility(Rt, method="annual"):
 
 
 
-# plt.figure(figsize=[5,4])
-# plt.plot(Vt_bh, label= "buy and hold, r={}%".format(round(r_bh*100,2)))
-# plt.plot(Vt_MA, label= "MA, r={}%".format(round(r_MA*100,2)))
-# plt.plot(Vt_MOM, label= "MOM, r={}%".format(round(r_MOM*100,2)))
-# plt.legend()
-# # plt.savefig(fig_PATH+"selfrep_Hi20_Vt_20052021.png")
-# plt.savefig(fig_PATH+"selfrep_Lo20_Vt_19631983.png")
-
-
-# fig, ax = plt.subplots(3,1, sharex=True, figsize=[5,4])
-# ax[0].plot(Vt_bh.index[:-1], (Vt_bh.values[1:]- Vt_bh.values[:-1])/Vt_bh.values[:-1], color="blue", label= "buy and hold")
-# ax[0].legend()
-# ax[1].plot(Vt_bh.index[:-1], (Vt_MA.values[1:]- Vt_MA.values[:-1])/Vt_MA.values[:-1], color="orange", label= "MA")
-# ax[1].legend()
-# ax[2].plot(Vt_bh.index[:-1], (Vt_MOM.values[1:]- Vt_MOM.values[:-1])/Vt_MOM.values[:-1], color="green", label= "MOM")
-# ax[2].legend()
-# # plt.xlim([datetime(1963,1,1), datetime(2001,1,1)])
-# plt.savefig(fig_PATH+"selfrep_Lo20_Rt_20052021.png")
-# plt.savefig(fig_PATH+"selfrep_Hi20_Rt_19631983.png")
-
-
-# r_MA_50years = []
-# starts = []
-# for y in np.arange(1963, 2014):
-#     for m in np.arange(1,13):
-#         trade_period = (datetime(y,m,1), datetime(y,m,1) + relativedelta(months=12))
-#         V, r = get_portfolio_value_process(portfolio = "Lo 20", strategy="MA", look_back=100, transaction_cost = 0.4/100,
-#                                            trade_period=trade_period)
-#         r_MA_50years.append(r)
-#         starts.append(datetime(y,m,1))
-# r_MA_50years = pd.Series(r_MA_50years, index=pd.DatetimeIndex(starts))
-
-# len(r_MA_50years)
-# np.mean(r_MA_50years)
-# np.std(r_MA_50years)
-# np.mean(r_MA_50years) - 1.28 * np.std(r_MA_50years) # 10% significant level
-
-
-# r_MOM_50years = []
-# starts = []
-# for y in np.arange(1963, 2014):
-#     for m in np.arange(1,13):
-#         trade_period = (datetime(y,m,1), datetime(y,m,1) + relativedelta(months=12))
-#         V, r = get_portfolio_value_process(portfolio = "Lo 20", strategy="TSMOM", look_back=100, transaction_cost = 0.4/100,
-#                                            trade_period=trade_period)
-#         r_MOM_50years.append(r)
-#         starts.append(datetime(y,m,1))
-# r_MOM_50years = pd.Series(r_MOM_50years, index=pd.DatetimeIndex(starts))
-# len(r_MOM_50years)
-# np.mean(r_MOM_50years)
-# np.std(r_MOM_50years)
-# np.mean(r_MOM_50years) - 1.28 * np.std(r_MOM_50years) # 10% significant level
-
-
-
-## correlation between MA and MOM returns: highly correlated
-# np.corrcoef(r_MA_50years, r_MOM_50years)
-
-
-## Sharpe ratio
-
-# (np.mean(r_MA_50years) - 0.05)/np.std(r_MA_50years)
-
-# (np.mean(r_MOM_50years) - 0.05)/np.std(r_MOM_50years)
-
-
-## Jensen's alpha
-# _,_,Rt = get_portfolio_value_process(portfolio="Qnt 2", strategy="MA", look_back=50,
-#                                      trade_period=(datetime(1963,1,1), datetime(2013,12,31)),
-#                                      return_Rt=True)
-# portfolio_return = Rt
-
 def get_jensen_alpha(portfolio_return, return_fitted=False):
     '''
     :return: return the Jensen's alpha in % by fitted Fama-French 4 factor model.
@@ -256,24 +146,14 @@ def get_jensen_alpha(portfolio_return, return_fitted=False):
     lm_formula = "Y ~ Mkt_RF + SMB + HML"
     lm_fitted = ols(lm_formula, df_ff4).fit()
 
-    # Or from line (***), run the following:
-    # X = df_ff4[["Mkt-RF", "SMB", "HML"]]
-    # X = sm.add_constant(X, prepend=True).rename(columns={"const": "alpha"})
-    # lm = sm.OLS(Y,X)
-    # lm_fitted = lm.fit()
     alpha = lm_fitted.params[0] * 100
     if return_fitted:
         return lm_fitted
     else:
         return alpha
 
-# lm_fitted = get_jensen_alpha(Rt, return_fitted=True)
-# lm_fitted.summary()
-# lm_fitted.t_test([0,1,-1,0])
-
 
 # Crash analysis
-
 def convert_to_monthly_return(daily_return):
     Rt = daily_return.copy()
     Rt.index = pd.MultiIndex.from_arrays([Rt.index.year, Rt.index.month], names=["year", "month"])
@@ -287,37 +167,6 @@ def convert_to_monthly_return(daily_return):
     Rt_monthly = Rt_monthly.set_index(keys="Date").drop(columns=["year", "month", "day"]).squeeze()
     return Rt_monthly
 
-# Rt_monthly = convert_to_monthly_return(daily_return=Rt)
-#
-# Rm_monthly=ff4m["Mkt"] [(ff4m["Mkt"] .index >= datetime(1963,1,1)) & (ff4m["Mkt"] .index <= datetime(2013,12,31))]
-
-# plt.figure()
-# plt.plot(Rm_monthly)
-
-# I_bear = np.array([(ff4m.loc[t - relativedelta(months=24): t, "Mkt"]).mean() < 0 for t in Rm_monthly.index]).astype(int)
-# # I_bear = np.array([all(ff4m.loc[t - relativedelta(months=5): t, "Mkt"] < 0) for t in Rm_monthly.index]).astype(int)
-# len(I_bear)
-#
-# I_upmonth = np.array(ff4m.loc[Rm_monthly.index, "Mkt"] > 0).astype(int)
-# len(I_upmonth)
-#
-# vol_m = np.array([(ff4.loc[t- timedelta(days=50): t, "Mkt"]).std() for t in Rm_monthly.index])
-# len(vol_m)
-
-# df_crash_analysis= ff4m.loc[Rm_monthly.index,:]
-# df_crash_analysis["I_bear"] = I_bear
-# df_crash_analysis["I_upmonth"] = I_upmonth
-# df_crash_analysis["vol_m"] = vol_m
-# df_crash_analysis["Y"] = (Rt_monthly-1)*100 - df_crash_analysis["RF"]
-#
-# mkt_timing_formula = "Y ~ I_bear + Mkt_RF + I_bear:Mkt_RF + I_bear:I_upmonth:Mkt_RF"
-# lm_mkt_timing = ols(formula=mkt_timing_formula, data=df_crash_analysis).fit()
-# lm_mkt_timing.summary()
-#
-#
-# mkt_stress_formula = "Y ~ I_bear + vol_m + I_bear:vol_m"
-# lm_mkt_stress = ols(formula=mkt_stress_formula, data=df_crash_analysis).fit()
-# lm_mkt_stress.summary()
 
 
 
